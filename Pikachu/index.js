@@ -20,6 +20,44 @@ bot.on("message", async message => {
   let cmd = messageArray[0];
   let args = messageArray.slice(1);
 
+  if(cmd === `${prefix}raporla`) {
+
+    let rUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    if(!rUser) return message.channel.send("Kullanıcı Bulunamadı.");
+    let reason = args.join(" ").slice(22);
+
+    let reportEmbed = new Discord.RichEmbed()
+    .setDescription("Raporlar")
+    .setColor("#15f153")
+    .addField("Raporlanmış Kullanıcı", `${rUser} - ID: ${rUser.id}`)
+    .addField("Raporlayan", `${message.author} - ID: ${message.author.id}`)
+    .addField("Sohbet Kanalı", message.channel)
+    .addField("Zaman", message.createdAt)
+    .addField("Sebep", reason);
+
+
+    let reportsChannel = message.guild.channels.find(`name`, "logs");
+    if(!reportsChannel) return message.channel.send("Raporların konulcağı kanal bulunamadı.");
+
+    message.delete.catch(O_o=>{})
+    reportsChannel.send(reportEmbed);
+
+    return;
+
+  }
+
+  if(cmd === `${prefix}site`) {
+
+    message.channel.send("**Teknolojist: **\n" + "https://forum.teknojist.com/");
+
+  }
+
+  if(cmd === `${prefix}yapımcı`) {
+
+    message.channel.send("**GameUx Studios: **\n" + "https://www.gameuxstudios.com");
+
+  }
+
   if(cmd === `${prefix}sunucubilgi`) {
 
     let sicon = message.guild.iconURL;
@@ -50,6 +88,7 @@ bot.on("message", async message => {
     .setColor("#15f153")
     .setThumbnail(bicon)
     .addField("Bot Adı:", bot.user.username)
+	.addField("Bot Yapımcı:", "GameUx Studios")
     .addField("Oluşturulma Tarihi:", bot.user.createdAt);
 
     return message.channel.send(botembed);
