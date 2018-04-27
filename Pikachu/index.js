@@ -36,19 +36,71 @@ bot.on("message", async message => {
     .addField("Sebep", reason);
 
 
-    let reportsChannel = message.guild.channels.find(`name`, "logs");
+    let reportsChannel = message.guild.channels.find(`name`, "report-logs");
     if(!reportsChannel) return message.channel.send("Raporların konulcağı kanal bulunamadı.");
 
-    message.delete.catch(O_o=>{})
+    //message.delete.catch(O_o=>{});
     reportsChannel.send(reportEmbed);
 
     return;
 
   }
 
+  if(cmd === `${prefix}at`) {
+
+    let kUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    if(!kUser) message.channel.send("Kullanıcı Bulunamadı!");
+    let kReason = args.join(" ").slice(22);
+    if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Bu komut için yetkiniz bulunmamakta!");
+    if(kUser.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Bu kullanıcı atılamaz!");
+
+    let kickEmbed = new Discord.RichEmbed()
+    .setDescription("~Sunucudan Atma~")
+    .setColor("#bc0000")
+    .addField("Atılan Kullanıcı", `${kUser} + Kullanıcı ID: ${kUser.id}`)
+    .addField("Atan Kullanıcı", `<@${message.author.id} + Kullanıcı ID: ${message.author.id}`)
+    .addField("Kanal", message.channel)
+    .addField("Zaman", message.createdAt)
+    .addField("Sebep", kReason);
+
+    let kickChannel = message.guild.channels.find('name', "logs");
+    if(!kickChannel) return message.channel.send("Kullanıcı atıldığında çıkacak logların konulacağı kanal bulunamadı.");
+
+    message.guild.member(kUser).kick(kReason);
+    kickChannel.send(kickEmbed);
+
+    return;
+  }
+
+  if(cmd === `${prefix}ban`) {
+
+    let bUser = message.guild.member(message.mentions.users.first() || message.guild.members.get(args[0]));
+    if(!bUser) message.channel.send("Kullanıcı Bulunamadı!");
+    let bReason = args.join(" ").slice(22);
+    if(!message.member.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Bu komut için yetkiniz bulunmamakta!");
+    if(bUser.hasPermission("MANAGE_MESSAGES")) return message.channel.send("Bu kullanıcı yasaklanamaz!");
+
+    let banEmbed = new Discord.RichEmbed()
+    .setDescription("~Sunucudan Yasaklama~")
+    .setColor("#bc0000")
+    .addField("Atılan Kullanıcı", `${bUser} + Kullanıcı ID: ${bUser.id}`)
+    .addField("Atan Kullanıcı", `<@${message.author.id} + Kullanıcı ID: ${message.author.id}`)
+    .addField("Kanal", message.channel)
+    .addField("Zaman", message.createdAt)
+    .addField("Sebep", bReason);
+
+    let banChannel = message.guild.channels.find('name', "logs");
+    if(!banChannel) return message.channel.send("Kullanıcı atıldığında çıkacak logların konulacağı kanal bulunamadı.");
+
+    message.guild.member(bUser).ban(bReason);
+    banChannel.send(banEmbed);
+
+    return;
+  }
+
   if(cmd === `${prefix}site`) {
 
-    message.channel.send("**Teknolojist: **\n" + "https://forum.teknojist.com/");
+    message.channel.send("**GameUx Studios: **\n" + "https://www.gameuxstudios.com");
 
   }
 
@@ -74,9 +126,14 @@ bot.on("message", async message => {
   }
 
   // Kısaltmalar
-  if(cmd === `sa`)  {
+  if(cmd === `sa` || cmd === `Sa` || cmd === `sA` || cmd === `SA` || cmd === `s.a` || cmd === `S.A` || cmd === `S.a` || cmd === `s.A`)  {
     return message.channel.send("Aleyküm Selam!");
   }
+
+  if(cmd === `merhaba`) {
+    return message.channel.send("Merhaba **" + message.author.username + "**");
+  }
+
   // -----------
 
   if(cmd === `${prefix}hakkında`) {
@@ -88,7 +145,7 @@ bot.on("message", async message => {
     .setColor("#15f153")
     .setThumbnail(bicon)
     .addField("Bot Adı:", bot.user.username)
-	.addField("Bot Yapımcı:", "GameUx Studios")
+	  .addField("Bot Yapımcı:", "GameUx Studios")
     .addField("Oluşturulma Tarihi:", bot.user.createdAt);
 
     return message.channel.send(botembed);
